@@ -12,6 +12,6 @@ public interface PlayerService {
     List<PlayerDTO> findAll();
     void update(Long id, PlayerDTO dto);
 
-//    List<PlayerDTO> findByQuery(String query);
+    List<PlayerDTO> findByQuery(String query);
 
 }
