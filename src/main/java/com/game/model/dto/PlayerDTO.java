@@ -23,7 +23,7 @@ public class PlayerDTO {
 
     private Long experience;
 
-    private Long level;
+    private Integer level;
 
     private Long untilNextLevel;
 
@@ -91,11 +91,11 @@ public class PlayerDTO {
         this.experience = experience;
     }
 
-    public Long getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(Long level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 

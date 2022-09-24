@@ -1,5 +1,6 @@
 package com.game.service;
 
+import com.game.model.Player;
 import com.game.model.dto.PlayerDTO;
 
 import java.util.List;
@@ -12,6 +13,9 @@ public interface PlayerService {
     List<PlayerDTO> findAll();
     void update(Long id, PlayerDTO dto);
 
+    Long create(PlayerDTO dto);
+
     List<PlayerDTO> findByQuery(String query);
 
+    PlayerDTO converterEntityToDto(Player player);
 }

@@ -38,7 +38,7 @@ public class Player {
     private Long experience;
 
     @Column(name = "Level")
-    private Long level;
+    private Integer level;
 
     @Column(name = "UntilNextLevel")
     private Long untilNextLevel;
@@ -107,11 +107,11 @@ public class Player {
         this.experience = experience;
     }
 
-    public Long getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(Long level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 

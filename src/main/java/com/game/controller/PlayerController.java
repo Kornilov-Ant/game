@@ -1,19 +1,15 @@
 package com.game.controller;
 
-import com.game.entity.Profession;
-import com.game.entity.Race;
 import com.game.model.dto.PlayerDTO;
 import com.game.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest")
@@ -27,26 +23,31 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerDTO> playerList(String query) {
-        if (query == null) return playerService.findAll();
+    public ResponseEntity<List<PlayerDTO>> playerList(String query) {
+        if (query == null) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
 
-        return playerService.findByQuery(query);
+        return new ResponseEntity<>(playerService.findByQuery(query), HttpStatus.OK);
     }
 
     @GetMapping(value = "/players/count", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Integer countPlayers() {
-        return playerService.findAll().size();
+    public ResponseEntity<Long> countPlayers() {
+        return new ResponseEntity<>(Long.valueOf(playerService.findAll().size()), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/players")
-    public ResponseEntity<?> create(String name, String title,
-                                    Race race, Profession profession,
-                                    Long birthday, Boolean banned,
-                                    Integer experience) {
-        if (0 > 1) {
-            return null;
+    @PostMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PlayerDTO> create(PlayerDTO dto) {
+        Long result = playerService.create(dto);
+        if (result > 0) {
+            return new ResponseEntity<>(playerService.findById(playerService.save(dto)).get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PlayerDTO getPlayerToId(@PathVariable("id") Long id) {
+        Optional<PlayerDTO> dto = playerService.findById(id);
+        return null;
     }
 
 }
