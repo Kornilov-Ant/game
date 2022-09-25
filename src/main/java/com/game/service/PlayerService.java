@@ -11,7 +11,9 @@ public interface PlayerService {
     Optional<PlayerDTO> findById(Long id);
     Long save(PlayerDTO playerDTO);
     List<PlayerDTO> findAll();
-    void update(Long id, PlayerDTO dto);
+    PlayerDTO update(Long id, PlayerDTO dto);
+
+    void delete(Long id);
 
     Long create(PlayerDTO dto);
 

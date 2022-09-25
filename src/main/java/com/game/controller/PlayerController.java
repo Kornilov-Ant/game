@@ -44,12 +44,57 @@ public class PlayerController {
         }
     }
 
-    @PostMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PlayerDTO getPlayerToId(@PathVariable("id") Long id) {
-        Optional<PlayerDTO> dto = playerService.findById(id);
-        return null;
+    @GetMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PlayerDTO> getPlayerToId(@PathVariable("id") Long id) {
+        try {
+            Long back = (Long) id; // проверка на число
+            if (id < 0) new RuntimeException(); // проверка что больше нуля
+            if (id % 1 != 0) new RuntimeException(); // проверка что целое число
+            playerService.findById(id).orElseThrow(() -> new Exception());
+            return new ResponseEntity<>(playerService.findById(id).get(), HttpStatus.OK);
+        } catch (NumberFormatException nfe) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException re) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception exc) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
+    @PostMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PlayerDTO> updatePlayerToId(@PathVariable("id") Long id, PlayerDTO dto) {
+        try {
+            Long back = (Long) id; // проверка на число
+            if (id < 0) new RuntimeException(); // проверка что больше нуля
+            if (id % 1 != 0) new RuntimeException(); // проверка что целое число
+            playerService.findById(id).orElseThrow(() -> new Exception());
+            return new ResponseEntity<>(playerService.update(id, dto), HttpStatus.OK);
+        } catch (NumberFormatException nfe) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException re) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception exc) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deletePlayerToId(@PathVariable("id") Long id) {
+        try {
+            Long back = (Long) id; // проверка на число
+            if (id < 0) new RuntimeException(); // проверка что больше нуля
+            if (id % 1 != 0) new RuntimeException(); // проверка что целое число
+            playerService.findById(id).orElseThrow(() -> new Exception());
+            playerService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NumberFormatException nfe) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException re) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception exc) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
 // не работало

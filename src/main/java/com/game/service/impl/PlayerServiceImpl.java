@@ -49,6 +49,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Long create(PlayerDTO dto) {
+        if (!Optional.ofNullable(dto.getBanned()).isPresent()) {
+            dto.setBanned(false);
+        }
         try {
             if (
                     dto.getName() == null ||
@@ -83,13 +86,31 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public void update(Long id, PlayerDTO dto) {
-
+    public PlayerDTO update(Long id, PlayerDTO dto) {
+        Player player = Optional.ofNullable(playerRepository.findById(id)).get().get();
+        if (Optional.ofNullable(dto.getName()).isPresent()) player.setName(dto.getName());
+        if (Optional.ofNullable(dto.getTitle()).isPresent()) player.setTitle(dto.getTitle());
+        if (Optional.ofNullable(dto.getRace()).isPresent()) player.setRace(dto.getRace());
+        if (Optional.ofNullable(dto.getProfession()).isPresent()) player.setProfession(dto.getProfession());
+        if (Optional.ofNullable(dto.getBirthday()).isPresent()) player.setData(new Date(dto.getBirthday()));
+        if (Optional.ofNullable(dto.getBanned()).isPresent()) player.setBanned(dto.getBanned());
+        if (Optional.ofNullable(dto.getExperience()).isPresent()) {
+            player.setExperience(dto.getExperience());
+            player.setLevel(level(player.getExperience())); // - уровень
+            player.setUntilNextLevel(nextLevel(player.getLevel(), player.getExperience())); // - опыта до следующего уровня
+        }
+        playerRepository.save(player);
+        return converterEntityToDto(playerRepository.findById(id).get());
     }
 
     @Override
     public List<PlayerDTO> findByQuery(String query) {
         return playerRepository.findByQuery(query).stream().map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(Long id) {
+        playerRepository.delete(playerRepository.findById(id).get());
     }
 
     @Override
