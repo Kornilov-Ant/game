@@ -1,9 +1,6 @@
 package com.game.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import java.util.Date;
 
@@ -14,6 +11,7 @@ import static com.game.model.DbConstants.DB_SCHEMA;
 public class Player {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "Name")
@@ -45,10 +43,6 @@ public class Player {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
