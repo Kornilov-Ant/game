@@ -9,15 +9,22 @@ import java.util.Optional;
 public interface PlayerService {
 
     Optional<PlayerDTO> findById(Long id);
+
     Long save(PlayerDTO playerDTO);
+
     List<PlayerDTO> findAll();
+
     PlayerDTO update(Long id, PlayerDTO dto);
 
     void delete(Long id);
 
     Long create(PlayerDTO dto);
 
-    List<PlayerDTO> findByQuery(String queryOne, String queryTwo);
+    List<PlayerDTO> findByQuery(
+            String name, String title, String race, String professional,
+            String after, String before, String banned, String minExperience,
+            String maxExperience, String minLevel, String maxLevel,
+            String order, String pageNumber, String pageSize);
 
     PlayerDTO converterEntityToDto(Player player);
 }

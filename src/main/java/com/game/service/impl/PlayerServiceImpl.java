@@ -1,5 +1,6 @@
 package com.game.service.impl;
 
+import com.game.controller.PlayerOrder;
 import com.game.model.Player;
 import com.game.model.dto.PlayerDTO;
 import com.game.repository.PlayerRepository;
@@ -104,18 +105,34 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<PlayerDTO> findByQuery(String queryOne, String queryTwo) {
-        if (queryOne != null || queryOne.equals("") && queryTwo != null || queryTwo.equals("")) {
-            return playerRepository.findByQuery(queryOne, queryTwo).stream()
-                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
-        } else if (queryOne != null || queryOne.equals("")) {
-            return playerRepository.findByQueryName(queryOne).stream()
-                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
-        } else {
-            return playerRepository.findByQueryTitle(queryTwo).stream()
-                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
-        }
-
+    public List<PlayerDTO> findByQuery(
+            String name, String title, String race, String professional,
+            Date after, Date before, Boolean banned, String minExperience,
+            String maxExperience, String minLevel, String maxLevel,
+            String order, String pageNumber, String pageSize) {
+        System.out.println(1);
+        return playerRepository.findByQuery(
+                        name == null ? "" : name,
+                        title == null ? "" : name,
+                        race == null ? "" : race,
+                        professional == null ? "" : professional,
+                        after == null ?
+                                new Date(new GregorianCalendar(1970, 0, 1).getTimeInMillis())
+                                : after,
+                        before == null ?
+                                new Date(new GregorianCalendar(3000, 11, 31).getTimeInMillis())
+                                : before,
+                        banned == null ? "" : banned, // ????
+                        minExperience == null ? "" : minExperience,
+                        maxExperience == null ? "" : maxExperience,
+                        minLevel == null ? "" : minLevel,
+                        maxLevel == null ? "" : maxLevel,
+                        order == null ? String.valueOf(PlayerOrder.ID) : order,
+                        pageNumber == null ? "0" : pageNumber,
+                        pageSize == null ? "3" : pageSize
+                )
+                .stream()
+                .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
     }
 
     @Override

@@ -22,11 +22,35 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PlayerDTO>> playerList(@RequestParam(value = "name", required = false) String queryOne,
-                                                      @RequestParam(value = "&title", required = false) String queryTwo) {
-        if (queryOne == null && queryTwo == null) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<PlayerDTO>> playerList(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "race", required = false) String race,
+            @RequestParam(value = "professional", required = false) String professional,
+            @RequestParam(value = "after", required = false) Long after,
+            @RequestParam(value = "before", required = false) Long before,
+            @RequestParam(value = "banned", required = false) String banned,
+            @RequestParam(value = "minExperience", required = false) Long minExperience,
+            @RequestParam(value = "maxExperience", required = false) Long maxExperience,
+            @RequestParam(value = "minLevel", required = false) Long minLevel,
+            @RequestParam(value = "maxLevel", required = false) Long maxLevel,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "pageNumber", required = false) Long pageNumber,
+            @RequestParam(value = "pageSize", required = false) Long pageSize
+    ) {
+        if (name == null && title == null
+                && race == null && professional == null
+                && after == null && before == null
+                && banned == null && minExperience == null
+                && maxExperience == null && minLevel == null
+                && maxLevel == null && order == null
+                && pageNumber == null && pageSize == null
+        ) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
 
-        return new ResponseEntity<>(playerService.findByQuery(queryOne, queryTwo), HttpStatus.OK);
+        return new ResponseEntity<>(
+                playerService.findByQuery(name, title, race, professional,
+                        after, before, banned, minExperience, maxExperience,
+                        minLevel, maxLevel, order, pageNumber, pageSize), HttpStatus.OK);
     }
 
     @GetMapping(value = "/players/count", produces = MediaType.APPLICATION_JSON_VALUE)
