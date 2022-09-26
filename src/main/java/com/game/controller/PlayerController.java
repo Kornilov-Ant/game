@@ -23,7 +23,7 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PlayerDTO>> playerList(String query) {
+    public ResponseEntity<List<PlayerDTO>> playerList(@RequestParam(value = "s?", required = false) String query) {
         if (query == null) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
 
         return new ResponseEntity<>(playerService.findByQuery(query), HttpStatus.OK);

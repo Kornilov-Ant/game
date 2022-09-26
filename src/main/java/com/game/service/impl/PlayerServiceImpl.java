@@ -122,6 +122,7 @@ public class PlayerServiceImpl implements PlayerService {
         dto.setRace(player.getRace());
         dto.setProfession(player.getProfession());
         dto.setData(player.getData());
+        dto.setBirthday(dto.getData().getTime());
         dto.setBanned(player.getBanned());
         dto.setExperience(player.getExperience());
         dto.setLevel(player.getLevel());
