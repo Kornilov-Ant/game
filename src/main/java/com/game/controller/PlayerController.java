@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest")
@@ -23,10 +22,11 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PlayerDTO>> playerList(@RequestParam(value = "s?", required = false) String query) {
-        if (query == null) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<PlayerDTO>> playerList(@RequestParam(value = "name", required = false) String queryOne,
+                                                      @RequestParam(value = "&title", required = false) String queryTwo) {
+        if (queryOne == null && queryTwo == null) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
 
-        return new ResponseEntity<>(playerService.findByQuery(query), HttpStatus.OK);
+        return new ResponseEntity<>(playerService.findByQuery(queryOne, queryTwo), HttpStatus.OK);
     }
 
     @GetMapping(value = "/players/count", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +34,11 @@ public class PlayerController {
         return new ResponseEntity<>(Long.valueOf(playerService.findAll().size()), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PlayerDTO> create(PlayerDTO dto) {
+    @PostMapping(value = "/players")
+    public ResponseEntity<PlayerDTO> create(@RequestBody PlayerDTO dto) {
         Long result = playerService.create(dto);
         if (result > 0) {
-            return new ResponseEntity<>(playerService.findById(playerService.save(dto)).get(), HttpStatus.OK);
+            return new ResponseEntity<>(playerService.findById(result).get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -62,7 +62,7 @@ public class PlayerController {
     }
 
     @PostMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PlayerDTO> updatePlayerToId(@PathVariable("id") Long id, PlayerDTO dto) {
+    public ResponseEntity<PlayerDTO> updatePlayerToId(@PathVariable("id") Long id, @RequestBody PlayerDTO dto) {
         try {
             Long back = (Long) id; // проверка на число
             if (id < 0) new RuntimeException(); // проверка что больше нуля

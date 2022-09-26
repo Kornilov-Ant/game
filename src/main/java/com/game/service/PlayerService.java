@@ -17,7 +17,7 @@ public interface PlayerService {
 
     Long create(PlayerDTO dto);
 
-    List<PlayerDTO> findByQuery(String query);
+    List<PlayerDTO> findByQuery(String queryOne, String queryTwo);
 
     PlayerDTO converterEntityToDto(Player player);
 }

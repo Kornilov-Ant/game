@@ -104,8 +104,18 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<PlayerDTO> findByQuery(String query) {
-        return playerRepository.findByQuery(query).stream().map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+    public List<PlayerDTO> findByQuery(String queryOne, String queryTwo) {
+        if (queryOne != null || queryOne.equals("") && queryTwo != null || queryTwo.equals("")) {
+            return playerRepository.findByQuery(queryOne, queryTwo).stream()
+                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+        } else if (queryOne != null || queryOne.equals("")) {
+            return playerRepository.findByQueryName(queryOne).stream()
+                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+        } else {
+            return playerRepository.findByQueryTitle(queryTwo).stream()
+                    .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+        }
+
     }
 
     @Override
