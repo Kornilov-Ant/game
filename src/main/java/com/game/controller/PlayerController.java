@@ -26,20 +26,20 @@ public class PlayerController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "race", required = false) String race,
-            @RequestParam(value = "professional", required = false) String professional,
-            @RequestParam(value = "after", required = false) Long after,
-            @RequestParam(value = "before", required = false) Long before,
+            @RequestParam(value = "profession", required = false) String profession,
+            @RequestParam(value = "after", required = false) String after,
+            @RequestParam(value = "before", required = false) String before,
             @RequestParam(value = "banned", required = false) String banned,
-            @RequestParam(value = "minExperience", required = false) Long minExperience,
-            @RequestParam(value = "maxExperience", required = false) Long maxExperience,
-            @RequestParam(value = "minLevel", required = false) Long minLevel,
-            @RequestParam(value = "maxLevel", required = false) Long maxLevel,
+            @RequestParam(value = "minExperience", required = false) String minExperience,
+            @RequestParam(value = "maxExperience", required = false) String maxExperience,
+            @RequestParam(value = "minLevel", required = false) String minLevel,
+            @RequestParam(value = "maxLevel", required = false) String maxLevel,
             @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "pageNumber", required = false) Long pageNumber,
-            @RequestParam(value = "pageSize", required = false) Long pageSize
+            @RequestParam(value = "pageNumber", required = false) String pageNumber,
+            @RequestParam(value = "pageSize", required = false) String pageSize
     ) {
         if (name == null && title == null
-                && race == null && professional == null
+                && race == null && profession == null
                 && after == null && before == null
                 && banned == null && minExperience == null
                 && maxExperience == null && minLevel == null
@@ -48,9 +48,12 @@ public class PlayerController {
         ) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
 
         return new ResponseEntity<>(
-                playerService.findByQuery(name, title, race, professional,
+                playerService.findByQuery(
+                        name, title, race, profession,
                         after, before, banned, minExperience, maxExperience,
-                        minLevel, maxLevel, order, pageNumber, pageSize), HttpStatus.OK);
+                        minLevel, maxLevel, order, pageNumber, pageSize
+                ),
+                HttpStatus.OK);
     }
 
     @GetMapping(value = "/players/count", produces = MediaType.APPLICATION_JSON_VALUE)

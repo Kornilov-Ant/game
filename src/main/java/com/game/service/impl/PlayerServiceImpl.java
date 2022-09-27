@@ -5,10 +5,10 @@ import com.game.model.Player;
 import com.game.model.dto.PlayerDTO;
 import com.game.repository.PlayerRepository;
 import com.game.service.PlayerService;
+import org.hibernate.annotations.OrderBy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Streamable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -106,32 +106,33 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<PlayerDTO> findByQuery(
-            String name, String title, String race, String professional,
-            Date after, Date before, Boolean banned, String minExperience,
+            String name, String title, String race, String profession,
+            String after, String before, String banned, String minExperience,
             String maxExperience, String minLevel, String maxLevel,
             String order, String pageNumber, String pageSize) {
-        System.out.println(1);
+        System.out.println("!!!!!findByQuery!!!!!");
         return playerRepository.findByQuery(
                         name == null ? "" : name,
-                        title == null ? "" : name,
-                        race == null ? "" : race,
-                        professional == null ? "" : professional,
+                        title == null ? "" : title,
+                        race,
+                        profession,
                         after == null ?
                                 new Date(new GregorianCalendar(1970, 0, 1).getTimeInMillis())
-                                : after,
+                                : new Date(Long.valueOf(after)),
                         before == null ?
                                 new Date(new GregorianCalendar(3000, 11, 31).getTimeInMillis())
-                                : before,
-                        banned == null ? "" : banned, // ????
-                        minExperience == null ? "" : minExperience,
-                        maxExperience == null ? "" : maxExperience,
-                        minLevel == null ? "" : minLevel,
-                        maxLevel == null ? "" : maxLevel,
-                        order == null ? String.valueOf(PlayerOrder.ID) : order,
-                        pageNumber == null ? "0" : pageNumber,
-                        pageSize == null ? "3" : pageSize
+                                : new Date(Long.valueOf(before)),
+                        banned == null ? null : Boolean.valueOf(banned),
+                        minExperience == null ? 0 : Long.valueOf(minExperience),
+                        maxExperience == null ? 10_000_000 : Long.valueOf(maxExperience),
+                        minLevel == null ? 0 : Integer.valueOf(minLevel),
+                        maxLevel == null ? 500 : Integer.valueOf(maxLevel),
+                        order == null ? String.valueOf(PlayerOrder.ID).toLowerCase() : String.valueOf(order).toLowerCase()
+//                        pageNumber == null ? 0L : Long.valueOf(pageNumber),
+//                        pageSize == null ? 3L : Long.valueOf(pageSize)
                 )
                 .stream()
+//                .sorted((o1 ,o2) -> o2.getId().compareTo(o1.getId()) )
                 .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
     }
 
@@ -165,4 +166,8 @@ public class PlayerServiceImpl implements PlayerService {
     private Long nextLevel(int level, Long exp) {
         return 50 * (level + 1) * (level + 2) - exp;
     }
+
+//    private Sort sortByNameAsc(String line) {
+//        return new Sort(Sort.Direction.ASC, line);
+//    }
 }
