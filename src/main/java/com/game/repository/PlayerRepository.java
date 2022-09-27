@@ -1,6 +1,7 @@
 package com.game.repository;
 
 import com.game.model.Player;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,20 +18,18 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
             " AND (:d IS NULL OR c.race = :d)" +
             " AND (:e IS NULL OR c.profession = :e)" +
             " AND (:h IS NULL OR c.banned = :h)" +
-            " AND (c.data BETWEEN :f AND :g)" +
+            " AND (c.birthday BETWEEN :f AND :g)" +
             " AND (c.experience BETWEEN :i AND :j)" +
-            " AND (c.level >= :k) AND (c.level <= :l)" +
-            " ORDER BY :m"
+            " AND (c.level >= :k) AND (c.level <= :l)"
     )
-
-    List<Player> findByQuery(
-            @Param("a") String name, @Param("b") String title,
-            @Param("d") String race, @Param("e") String profession,
-            @Param("f") Date after, @Param("g") Date before,
-            @Param("h") Boolean banned,
-            @Param("i") Long minExperience, @Param("j") Long maxExperience,
-            @Param("k") Integer minLevel, @Param("l") Integer maxLevel, @Param("m") String order
-//            @Param("n") Long pageNumber, @Param("o") Long pageSize
+    List<Player> findByQuery(Sort sort,
+                             @Param("a") String name, @Param("b") String title,
+                             @Param("d") String race, @Param("e") String profession,
+                             @Param("f") Date after, @Param("g") Date before,
+                             @Param("h") Boolean banned,
+                             @Param("i") Long minExperience, @Param("j") Long maxExperience,
+                             @Param("k") Integer minLevel, @Param("l") Integer maxLevel
+//                             @Param("n") Long pageNumber, @Param("o") Long pageSize
     );
 
 }

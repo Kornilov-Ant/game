@@ -27,7 +27,7 @@ public class Player {
     private String profession;
 
     @Column(name = "Birthday")
-    private Date data;
+    private Date birthday;
 
     @Column(name = "Banned")
     private Boolean banned;
@@ -77,12 +77,12 @@ public class Player {
         this.profession = profession;
     }
 
-    public Date getData() {
-        return data;
+    public Date getBirthday() {
+        return birthday;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setBirthday(Date data) {
+        this.birthday = data;
     }
 
     public Boolean getBanned() {

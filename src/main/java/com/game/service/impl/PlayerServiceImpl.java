@@ -1,11 +1,9 @@
 package com.game.service.impl;
 
-import com.game.controller.PlayerOrder;
 import com.game.model.Player;
 import com.game.model.dto.PlayerDTO;
 import com.game.repository.PlayerRepository;
 import com.game.service.PlayerService;
-import org.hibernate.annotations.OrderBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Streamable;
@@ -39,7 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
         player.setTitle(playerDTO.getTitle());
         player.setRace(playerDTO.getRace());
         player.setProfession(playerDTO.getProfession());
-        player.setData(new Date(playerDTO.getBirthday()));
+        player.setBirthday(new Date(playerDTO.getBirthday()));
         player.setBanned(playerDTO.getBanned());
         player.setExperience(playerDTO.getExperience());
         player.setLevel(level(player.getExperience())); // - уровень
@@ -93,7 +91,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (Optional.ofNullable(dto.getTitle()).isPresent()) player.setTitle(dto.getTitle());
         if (Optional.ofNullable(dto.getRace()).isPresent()) player.setRace(dto.getRace());
         if (Optional.ofNullable(dto.getProfession()).isPresent()) player.setProfession(dto.getProfession());
-        if (Optional.ofNullable(dto.getBirthday()).isPresent()) player.setData(new Date(dto.getBirthday()));
+        if (Optional.ofNullable(dto.getBirthday()).isPresent()) player.setBirthday(new Date(dto.getBirthday()));
         if (Optional.ofNullable(dto.getBanned()).isPresent()) player.setBanned(dto.getBanned());
         if (Optional.ofNullable(dto.getExperience()).isPresent()) {
             player.setExperience(dto.getExperience());
@@ -111,7 +109,7 @@ public class PlayerServiceImpl implements PlayerService {
             String maxExperience, String minLevel, String maxLevel,
             String order, String pageNumber, String pageSize) {
         System.out.println("!!!!!findByQuery!!!!!");
-        return playerRepository.findByQuery(
+        return playerRepository.findByQuery(Sort.by(Sort.Direction.ASC, order.toLowerCase()),
                         name == null ? "" : name,
                         title == null ? "" : title,
                         race,
@@ -126,13 +124,11 @@ public class PlayerServiceImpl implements PlayerService {
                         minExperience == null ? 0 : Long.valueOf(minExperience),
                         maxExperience == null ? 10_000_000 : Long.valueOf(maxExperience),
                         minLevel == null ? 0 : Integer.valueOf(minLevel),
-                        maxLevel == null ? 500 : Integer.valueOf(maxLevel),
-                        order == null ? String.valueOf(PlayerOrder.ID).toLowerCase() : String.valueOf(order).toLowerCase()
+                        maxLevel == null ? 500 : Integer.valueOf(maxLevel)
 //                        pageNumber == null ? 0L : Long.valueOf(pageNumber),
 //                        pageSize == null ? 3L : Long.valueOf(pageSize)
                 )
                 .stream()
-//                .sorted((o1 ,o2) -> o2.getId().compareTo(o1.getId()) )
                 .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
     }
 
@@ -149,7 +145,7 @@ public class PlayerServiceImpl implements PlayerService {
         dto.setTitle(player.getTitle());
         dto.setRace(player.getRace());
         dto.setProfession(player.getProfession());
-        dto.setData(player.getData());
+        dto.setData(player.getBirthday());
         dto.setBirthday(dto.getData().getTime());
         dto.setBanned(player.getBanned());
         dto.setExperience(player.getExperience());
