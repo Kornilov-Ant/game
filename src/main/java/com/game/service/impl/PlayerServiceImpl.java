@@ -5,6 +5,9 @@ import com.game.model.dto.PlayerDTO;
 import com.game.repository.PlayerRepository;
 import com.game.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
@@ -53,6 +56,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
         try {
             if (
+                    dto.getId() != null ||
                     dto.getName() == null ||
                             dto.getTitle() == null ||
                             dto.getRace() == null ||
@@ -60,18 +64,18 @@ public class PlayerServiceImpl implements PlayerService {
                             dto.getBirthday() == null ||
                             dto.getExperience() == null
             ) {
-                new RuntimeException();
-            } else if (dto.getName().length() > 12 || dto.getTitle().length() > 30) {
-                new RuntimeException();
+                throw new RuntimeException();
+            } else if (dto.getName().length() >= 12 || dto.getTitle().length() >= 30) {
+                throw new RuntimeException();
             } else if (dto.getName().equals("")) {
-                new RuntimeException();
-            } else if (dto.getExperience() > 10_000_000L) {
-                new RuntimeException();
-            } else if (dto.getBirthday() < 0) {
-                new RuntimeException();
+                throw new RuntimeException();
+            } else if (dto.getExperience() > 10_000_000L || dto.getExperience() < 0) {
+                throw new RuntimeException();
+            } else if (dto.getBirthday() < 0L) {
+                throw new RuntimeException();
             } else if (dto.getBirthday() < new GregorianCalendar(2000, 0, 1).getTimeInMillis() ||
                     dto.getBirthday() > new GregorianCalendar(3000, 11, 31).getTimeInMillis()) {
-                new RuntimeException();
+                throw new RuntimeException();
             }
             return save(dto);
         } catch (Exception e) {
@@ -108,28 +112,37 @@ public class PlayerServiceImpl implements PlayerService {
             String after, String before, String banned, String minExperience,
             String maxExperience, String minLevel, String maxLevel,
             String order, String pageNumber, String pageSize) {
-        System.out.println("!!!!!findByQuery!!!!!");
-        return playerRepository.findByQuery(Sort.by(Sort.Direction.ASC, order.toLowerCase()),
-                        name == null ? "" : name,
-                        title == null ? "" : title,
-                        race,
-                        profession,
-                        after == null ?
-                                new Date(new GregorianCalendar(1970, 0, 1).getTimeInMillis())
-                                : new Date(Long.valueOf(after)),
-                        before == null ?
-                                new Date(new GregorianCalendar(3000, 11, 31).getTimeInMillis())
-                                : new Date(Long.valueOf(before)),
-                        banned == null ? null : Boolean.valueOf(banned),
-                        minExperience == null ? 0 : Long.valueOf(minExperience),
-                        maxExperience == null ? 10_000_000 : Long.valueOf(maxExperience),
-                        minLevel == null ? 0 : Integer.valueOf(minLevel),
-                        maxLevel == null ? 500 : Integer.valueOf(maxLevel)
-//                        pageNumber == null ? 0L : Long.valueOf(pageNumber),
-//                        pageSize == null ? 3L : Long.valueOf(pageSize)
-                )
-                .stream()
-                .map(player -> converterEntityToDto(player)).collect(Collectors.toList());
+        try {
+            return playerRepository.findByQuery(
+                            PageRequest.of(
+                                    pageNumber == null ? 0 : Integer.valueOf(pageNumber),
+                                    pageSize == null ? 3 : Integer.valueOf(pageSize),
+                                    Sort.by(Sort.Direction.ASC,
+                                            order == null ? "id" : order.toLowerCase())
+                            ),
+                            name == null ? "" : name,
+                            title == null ? "" : title,
+                            race,
+                            profession,
+                            after == null ?
+                                    new Date(new GregorianCalendar(1970, 0, 1).getTimeInMillis())
+                                    : new Date(Long.valueOf(after)),
+                            before == null ?
+                                    new Date(new GregorianCalendar(3000, 11, 31).getTimeInMillis())
+                                    : new Date(Long.valueOf(before)),
+                            banned == null ? null : Boolean.valueOf(banned),
+                            minExperience == null ? 0 : Long.valueOf(minExperience),
+                            maxExperience == null ? 10_000_000 : Long.valueOf(maxExperience),
+                            minLevel == null ? 0 : Integer.valueOf(minLevel),
+                            maxLevel == null ? 500 : Integer.valueOf(maxLevel)
+                    )
+                    .stream()
+                    .map(player -> converterEntityToDto(player))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     @Override
@@ -162,8 +175,4 @@ public class PlayerServiceImpl implements PlayerService {
     private Long nextLevel(int level, Long exp) {
         return 50 * (level + 1) * (level + 2) - exp;
     }
-
-//    private Sort sortByNameAsc(String line) {
-//        return new Sort(Sort.Direction.ASC, line);
-//    }
 }

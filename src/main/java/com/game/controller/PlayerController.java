@@ -38,15 +38,6 @@ public class PlayerController {
             @RequestParam(value = "pageNumber", required = false) String pageNumber,
             @RequestParam(value = "pageSize", required = false) String pageSize
     ) {
-        if (name == null && title == null
-                && race == null && profession == null
-                && after == null && before == null
-                && banned == null && minExperience == null
-                && maxExperience == null && minLevel == null
-                && maxLevel == null && order == null
-                && pageNumber == null && pageSize == null
-        ) return new ResponseEntity<>(playerService.findAll(), HttpStatus.OK);
-
         return new ResponseEntity<>(
                 playerService.findByQuery(
                         name, title, race, profession,
@@ -57,8 +48,27 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/players/count", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Long> countPlayers() {
-        return new ResponseEntity<>(Long.valueOf(playerService.findAll().size()), HttpStatus.OK);
+    public ResponseEntity<Long> countPlayers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "race", required = false) String race,
+            @RequestParam(value = "profession", required = false) String profession,
+            @RequestParam(value = "after", required = false) String after,
+            @RequestParam(value = "before", required = false) String before,
+            @RequestParam(value = "banned", required = false) String banned,
+            @RequestParam(value = "minExperience", required = false) String minExperience,
+            @RequestParam(value = "maxExperience", required = false) String maxExperience,
+            @RequestParam(value = "minLevel", required = false) String minLevel,
+            @RequestParam(value = "maxLevel", required = false) String maxLevel
+    ) {
+        return new ResponseEntity<>(Long.valueOf(
+                playerService.findByQuery(
+                name, title, race,
+                profession, after, before,
+                banned, minExperience, maxExperience,
+                minLevel, maxLevel, "id", "0", "10000000"
+                ).size()),
+                HttpStatus.OK);
     }
 
     @PostMapping(value = "/players")
@@ -123,5 +133,3 @@ public class PlayerController {
         }
     }
 }
-
-// не работало

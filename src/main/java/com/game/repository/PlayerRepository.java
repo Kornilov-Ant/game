@@ -1,7 +1,7 @@
 package com.game.repository;
 
 import com.game.model.Player;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,14 +22,12 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
             " AND (c.experience BETWEEN :i AND :j)" +
             " AND (c.level >= :k) AND (c.level <= :l)"
     )
-    List<Player> findByQuery(Sort sort,
+    List<Player> findByQuery(Pageable page,
                              @Param("a") String name, @Param("b") String title,
                              @Param("d") String race, @Param("e") String profession,
                              @Param("f") Date after, @Param("g") Date before,
                              @Param("h") Boolean banned,
                              @Param("i") Long minExperience, @Param("j") Long maxExperience,
                              @Param("k") Integer minLevel, @Param("l") Integer maxLevel
-//                             @Param("n") Long pageNumber, @Param("o") Long pageSize
     );
-
 }
