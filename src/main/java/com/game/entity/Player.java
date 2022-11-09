@@ -1,10 +1,10 @@
-package com.game.model;
+package com.game.entity;
 
 import javax.persistence.*;
 
 import java.util.Date;
 
-import static com.game.model.DbConstants.DB_SCHEMA;
+import static com.game.entity.DbConstants.DB_SCHEMA;
 
 @Entity
 @Table(name = "Player", schema = DB_SCHEMA)
@@ -32,7 +32,7 @@ public class Player {
     @Column(name = "Banned")
     private Boolean banned;
 
-    @Column(name = "experience")
+    @Column(name = "Experience")
     private Long experience;
 
     @Column(name = "Level")

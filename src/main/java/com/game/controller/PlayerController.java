@@ -1,6 +1,6 @@
 package com.game.controller;
 
-import com.game.model.dto.PlayerDTO;
+import com.game.entity.dto.PlayerDTO;
 import com.game.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,10 +63,10 @@ public class PlayerController {
     ) {
         return new ResponseEntity<>(Long.valueOf(
                 playerService.findByQuery(
-                name, title, race,
-                profession, after, before,
-                banned, minExperience, maxExperience,
-                minLevel, maxLevel, "id", "0", "10000000"
+                        name, title, race,
+                        profession, after, before,
+                        banned, minExperience, maxExperience,
+                        minLevel, maxLevel, "id", "0", "10000000"
                 ).size()),
                 HttpStatus.OK);
     }

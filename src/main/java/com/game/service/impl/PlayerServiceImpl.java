@@ -1,13 +1,11 @@
 package com.game.service.impl;
 
-import com.game.model.Player;
-import com.game.model.dto.PlayerDTO;
+import com.game.entity.Player;
+import com.game.entity.dto.PlayerDTO;
 import com.game.repository.PlayerRepository;
 import com.game.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
@@ -46,7 +44,9 @@ public class PlayerServiceImpl implements PlayerService {
         player.setLevel(level(player.getExperience())); // - уровень
         player.setUntilNextLevel(nextLevel(player.getLevel(), player.getExperience())); // - опыта до следующего уровня
 
-        return playerRepository.save(player).getId();
+        player = playerRepository.save(player);
+
+        return player.getId();
     }
 
     @Override

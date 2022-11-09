@@ -1,4 +1,4 @@
-package com.game.model.dto;
+package com.game.entity.dto;
 
 
 import java.util.Date;

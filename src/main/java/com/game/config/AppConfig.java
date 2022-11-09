@@ -31,7 +31,7 @@ public class AppConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.game.model");
+        em.setPackagesToScan("com.game.entity");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -46,8 +46,8 @@ public class AppConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/rpg?serverTimezone=UTC&characterEncoding=UTF-8");
-        dataSource.setUsername("root");
-        dataSource.setPassword("rootroot"); // пароль просто root не давался создаться
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("rootroot"); // пароль просто root не давался создаться
         return dataSource;
     }
 
