@@ -15,7 +15,7 @@ public class PlayerDTO {
 
     private String profession;
 
-    private Date data;
+//    private Date date;
 
     private Long birthday;
 
@@ -67,13 +67,13 @@ public class PlayerDTO {
         this.profession = profession;
     }
 
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
+//    public Date getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(Date date) {
+//        this.date = date;
+//    }
 
     public Boolean getBanned() {
         return banned;

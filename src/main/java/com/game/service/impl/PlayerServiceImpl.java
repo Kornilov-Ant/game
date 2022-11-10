@@ -44,9 +44,7 @@ public class PlayerServiceImpl implements PlayerService {
         player.setLevel(level(player.getExperience())); // - уровень
         player.setUntilNextLevel(nextLevel(player.getLevel(), player.getExperience())); // - опыта до следующего уровня
 
-        player = playerRepository.save(player);
-
-        return player.getId();
+        return playerRepository.save(player).getId();
     }
 
     @Override
@@ -158,8 +156,9 @@ public class PlayerServiceImpl implements PlayerService {
         dto.setTitle(player.getTitle());
         dto.setRace(player.getRace());
         dto.setProfession(player.getProfession());
-        dto.setData(player.getBirthday());
-        dto.setBirthday(dto.getData().getTime());
+//        dto.setDate(player.getBirthday());
+//        dto.setBirthday(dto.getDate().getTime());
+        dto.setBirthday(player.getBirthday().getTime());
         dto.setBanned(player.getBanned());
         dto.setExperience(player.getExperience());
         dto.setLevel(player.getLevel());

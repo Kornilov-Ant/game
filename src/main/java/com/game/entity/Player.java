@@ -7,7 +7,8 @@ import java.util.Date;
 import static com.game.entity.DbConstants.DB_SCHEMA;
 
 @Entity
-@Table(name = "Player", schema = DB_SCHEMA)
+//@Table(name = "Player", schema = DB_SCHEMA)
+@Table(name = "Player")
 public class Player {
 
     @Id
