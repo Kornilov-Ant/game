@@ -52,33 +52,8 @@ public class PlayerServiceImpl implements PlayerService {
         if (!Optional.ofNullable(dto.getBanned()).isPresent()) {
             dto.setBanned(false);
         }
-        try {
-            if (
-                    dto.getId() != null ||
-                    dto.getName() == null ||
-                            dto.getTitle() == null ||
-                            dto.getRace() == null ||
-                            dto.getProfession() == null ||
-                            dto.getBirthday() == null ||
-                            dto.getExperience() == null
-            ) {
-                throw new RuntimeException();
-            } else if (dto.getName().length() >= 12 || dto.getTitle().length() >= 30) {
-                throw new RuntimeException();
-            } else if (dto.getName().equals("")) {
-                throw new RuntimeException();
-            } else if (dto.getExperience() > 10_000_000L || dto.getExperience() < 0) {
-                throw new RuntimeException();
-            } else if (dto.getBirthday() < 0L) {
-                throw new RuntimeException();
-            } else if (dto.getBirthday() < new GregorianCalendar(2000, 0, 1).getTimeInMillis() ||
-                    dto.getBirthday() > new GregorianCalendar(3000, 11, 31).getTimeInMillis()) {
-                throw new RuntimeException();
-            }
-            return save(dto);
-        } catch (Exception e) {
-            return -1L;
-        }
+        if (check(dto)) return save(dto);
+        return -1L;
     }
 
     @Override
@@ -88,19 +63,52 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerDTO update(Long id, PlayerDTO dto) {
+        if (
+                dto.getName() == null &&
+                        dto.getTitle() == null &&
+                        dto.getRace() == null &&
+                        dto.getProfession() == null &&
+                        dto.getBirthday() == null &&
+                        dto.getExperience() == null
+        ) {
+            return converterEntityToDto(playerRepository.findById(id).get());
+        }
+
         Player player = Optional.ofNullable(playerRepository.findById(id)).get().get();
-        if (Optional.ofNullable(dto.getName()).isPresent()) player.setName(dto.getName());
-        if (Optional.ofNullable(dto.getTitle()).isPresent()) player.setTitle(dto.getTitle());
+
+        if (Optional.ofNullable(dto.getName()).isPresent()) {
+            if (dto.getName().length() < 12 && dto.getName().length() > 0) {
+                player.setName(dto.getName());
+            } else throw new RuntimeException();
+        }
+
+        if (Optional.ofNullable(dto.getTitle()).isPresent()) {
+            if (dto.getTitle().length() < 30 && dto.getTitle().length() > 0) {
+                player.setTitle(dto.getTitle());
+            } else throw new RuntimeException();
+        }
         if (Optional.ofNullable(dto.getRace()).isPresent()) player.setRace(dto.getRace());
+
         if (Optional.ofNullable(dto.getProfession()).isPresent()) player.setProfession(dto.getProfession());
-        if (Optional.ofNullable(dto.getBirthday()).isPresent()) player.setBirthday(new Date(dto.getBirthday()));
+
+        if (Optional.ofNullable(dto.getBirthday()).isPresent()) {
+            if (dto.getBirthday() > new GregorianCalendar(2000, 0, 1).getTimeInMillis() &&
+                    dto.getBirthday() < new GregorianCalendar(3000, 11, 31).getTimeInMillis()) {
+                player.setBirthday(new Date(dto.getBirthday()));
+            } else throw new RuntimeException();
+        }
+
         if (Optional.ofNullable(dto.getBanned()).isPresent()) player.setBanned(dto.getBanned());
+
         if (Optional.ofNullable(dto.getExperience()).isPresent()) {
-            player.setExperience(dto.getExperience());
-            player.setLevel(level(player.getExperience())); // - уровень
-            player.setUntilNextLevel(nextLevel(player.getLevel(), player.getExperience())); // - опыта до следующего уровня
+            if (dto.getExperience() < 10_000_000L && dto.getExperience() > 0) {
+                player.setExperience(dto.getExperience());
+                player.setLevel(level(player.getExperience())); // - уровень
+                player.setUntilNextLevel(nextLevel(player.getLevel(), player.getExperience())); // - опыта до следующего уровня
+            } else throw new RuntimeException();
         }
         playerRepository.save(player);
+
         return converterEntityToDto(playerRepository.findById(id).get());
     }
 
@@ -156,8 +164,6 @@ public class PlayerServiceImpl implements PlayerService {
         dto.setTitle(player.getTitle());
         dto.setRace(player.getRace());
         dto.setProfession(player.getProfession());
-//        dto.setDate(player.getBirthday());
-//        dto.setBirthday(dto.getDate().getTime());
         dto.setBirthday(player.getBirthday().getTime());
         dto.setBanned(player.getBanned());
         dto.setExperience(player.getExperience());
@@ -173,5 +179,35 @@ public class PlayerServiceImpl implements PlayerService {
 
     private Long nextLevel(int level, Long exp) {
         return 50 * (level + 1) * (level + 2) - exp;
+    }
+
+    private Boolean check(PlayerDTO dto) {
+        try {
+            if (
+                    dto.getId() != null ||
+                            dto.getName() == null ||
+                            dto.getTitle() == null ||
+                            dto.getRace() == null ||
+                            dto.getProfession() == null ||
+                            dto.getBirthday() == null ||
+                            dto.getExperience() == null
+            ) {
+                throw new RuntimeException();
+            } else if (dto.getName().length() >= 12 || dto.getTitle().length() >= 30) {
+                throw new RuntimeException();
+            } else if (dto.getName().equals("")) {
+                throw new RuntimeException();
+            } else if (dto.getExperience() > 10_000_000L || dto.getExperience() < 0) {
+                throw new RuntimeException();
+            } else if (dto.getBirthday() < 0L) {
+                throw new RuntimeException();
+            } else if (dto.getBirthday() < new GregorianCalendar(2000, 0, 1).getTimeInMillis() ||
+                    dto.getBirthday() > new GregorianCalendar(3000, 11, 31).getTimeInMillis()) {
+                throw new RuntimeException();
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
